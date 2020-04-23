@@ -1,5 +1,7 @@
 @extends('layout.user.logged.master')
 @section('content')
+
+
     <section id="appointment" data-stellar-background-ratio="3">
         <div class="container">
             <div class="row">
@@ -33,22 +35,22 @@
                                 <input type="date" name="date" value="" class="form-control">
                             </div>
 
-                            <div class="col-md-6 col-sm-6">
+                            <div class="col-md-12 col-sm-12">
                                 <label for="select">Select Hospital</label>
-                                <select class="form-control" name="hospital">
+                                <select class="form-control input-lg dynamic" data-dependent="tets" name="hospital">
+                                    <option value="">Select Hospital</option>
+
                                     @foreach($hospitals as $hospital)
                                     <option value="{{ $hospital->id }}">{{ $hospital->name }}</option>
                                     @endforeach
+
                                 </select>
                             </div>
 
                             <div class="col-md-6 col-sm-6">
                                 <label for="select">Select Test</label>
-                                <select class="form-control" name="tets">
-                                    <option>Square</option>
-                                    <option>IBN sina</option>
-                                    <option>Popular</option>
-                                    <option>Medical Research</option>
+                                <select class="form-control input-lg dynamic" data-dependent="cost" name="tets" id="tets">
+                                        <option value="">Select Test</option>
                                 </select>
                             </div>
 
@@ -56,7 +58,7 @@
 
                             <div class="col-md-6 col-sm-6">
                                 <label for="select">Cost</label><br>
-                                <input type="number" class="form-control" readonly name="cost">
+                                <input type="number" class="form-control" readonly name="cost" id="cost">
                             </div>
 
                             <div class="col-md-12 col-sm-12">
@@ -73,6 +75,30 @@
             </div>
         </div>
     </section>
+
+    <script>
+        $(document).ready(function () {
+            $('.dynamic').change(function () {
+                if ($(this).val() != '')
+                {
+                    var select = $(this).attr("id");
+                    var value = $(this).val();
+                    var dependent = $(this).data('dependent');
+                    var _token = $('input[name="_token"]').val();
+
+                    $.ajax({
+                        url:"{{ route('appoinmentcontroller.fetch') }}",
+                        method:"POST",
+                        data:{select:select, value:value, _token:_token, dependent:dependent},
+                        success:function (result) {
+                            $('#'+dependent).html(result);
+                        }
+                    })
+                }
+            })
+        })
+    </script>
+
 @endsection
 @section('title','Medical Test Partner')
 @section('ptitle','Service request')

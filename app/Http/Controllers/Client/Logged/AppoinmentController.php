@@ -9,6 +9,8 @@ use App\Requested;
 use App\Test;
 use App\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class AppoinmentController extends Controller
 {
@@ -30,13 +32,31 @@ class AppoinmentController extends Controller
     public function create()
     {
 
-        //$data['user'] = auth()->user();
-        //$data['hospitals'] = Hospital::all();
-        $data['tests'] = Test::all();
-        dd($data);
+        $data['user'] = auth()->user();
+        //$data['hospitals'] = DB::table('hospital_tests')->groupBy('hospital_id')->get();
+        $data['hospitals'] = Hospital::all();
+        //$data['tests'] = Test::all();
+        //dd($data);
 
         return view('user/logged/appoinmnet/create',$data);
 
+    }
+
+    function fetch(Request $request)
+    {
+        $select = $request->get('select');
+        $value = $request->get('value');
+        $dependent = $request->get('dependent');
+        $data = DB::table('hospital_tests')
+                ->where($select ,$value)
+                ->groupBy($dependent)
+                ->get();
+        $output = '<option value="">Select '.ucfirst($dependent).'</option>';
+        foreach ($data as $row)
+        {
+            $output .= '<option value="'.$row->$dependent.'">'.$row->$dependent.'</option>';
+        }
+        echo $output;
     }
 
     /**

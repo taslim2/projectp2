@@ -21,6 +21,7 @@ Route::get('/', function () {
 //login
 Route::get('dashboard', 'Client\Logged\DashboardController@index');
 Route::get('appoinment', 'Client\Logged\AppoinmentController@create');
+    Route::post('appoinment/fetch', 'Client\Logged\AppoinmentController@fetch')->name('appoinmentcontroller.fetch');
     Route::post('appoinment/store','Client\Logged\AppoinmentController@store');
 Route::get('requested', 'Client\Logged\RequestedController@index');
 Route::get('profileedit','Client\ClientController@index');
